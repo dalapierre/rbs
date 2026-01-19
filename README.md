@@ -1,5 +1,7 @@
 # rbs
 
+`WARNING: Still in development`
+
 RBS Stands for `Rune Build System`. It is a way to define build profiles for Odin projects and is an iteration over the [Rune](https://github.com/dalapierre/rune) CLI I previously built.
 
 ### Purpose
@@ -81,6 +83,6 @@ process_flags :: proc(ctx: ^rbs.Context) {
 - Add prebuild steps through `rbs.add_pre_build_step`
 - Add post build steps through `rbs.add_post_build_step`
 
-### RCP (Rune Content Pipeline)
+### rcp (Rune Content Pipeline)
 
 The pipeline is currently in development and is at the early stages. It is meant to define how to process certain assets such as shaders when making games. It also caches assets under `.rcp-cache` so that they are not reprocessed unless they change.
