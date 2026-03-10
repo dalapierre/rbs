@@ -19,8 +19,7 @@ install_dependencies :: proc(ctx: Context, profile: Profile) -> Error {
         dep_path, _ := filepath.abs(dep, context.allocator)
         defer delete(dep_path)
 
-        err := os.copy_file(install_path, dep_path)
-        if err != nil {
+        if err := os.copy_file(install_path, dep_path); err != nil {
             fmt.eprintfln("Failed to copy %s, %s", dep, err)
             return err
         }

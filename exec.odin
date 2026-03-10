@@ -28,8 +28,7 @@ exec_odin_cmd :: proc(ctx: Context, cmd: Odin_Command, profile: Profile) -> Erro
     script := fmt.tprintf("odin %s %s -out:%s%s%s -target:%s %s", s_cmd, profile.entry, out, profile.name, ext, get_platform(profile.arch, profile.os), profile.flags)
     fmt.printfln("%s\n", script)
     
-    e := run_script(script)
-    if e != nil { return e }
+    if err := run_script(script); err != nil do return err
 
     // run post build
     for step in ctx.post_build_steps {
