@@ -1,6 +1,7 @@
 package rbs
 
-import "core:os/os2"
+import "base:runtime"
+import "core:os"
 
 RBS_Error :: enum {
     Script_Error,
@@ -11,6 +12,7 @@ RBS_Error :: enum {
 }
 
 Error :: union #shared_nil {
-    os2.Error,
+    os.Error,
     RBS_Error,
+    runtime.Allocator_Error
 }

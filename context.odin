@@ -1,7 +1,7 @@
 package rbs
 
 import "core:fmt"
-import "core:os/os2"
+import "core:os"
 import "base:runtime"
 
 @(private="package")
@@ -78,7 +78,7 @@ add_post_build_step :: proc(ctx: ^Context, cmd: Command) {
 add_dependency :: proc(ctx: ^Context, dep: string) { append(&ctx.dependencies, dep) }
 
 process :: proc(ctx: Context) -> Error {
-    cli := get_cli(os2.args)
+    cli := get_cli(os.args)
     defer dispose_cli(cli)
 
     // get profile or first added

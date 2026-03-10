@@ -63,7 +63,7 @@ You can also have access to CLI flags and arguments by using the `rbs.get_cli(os
 // called through ./rune run -scn:some_scene
 
 process_flags :: proc(ctx: ^rbs.Context) {
-    cli := rbs.get_cli(os2.args)
+    cli := rbs.get_cli(os.args)
     defer rbs.dispose_cli(cli)
 
     if "scn" in cli.flags {

@@ -2,7 +2,7 @@ package rbs
 
 import "core:fmt"
 import "core:strings"
-import os "core:os/os2"
+import "core:os"
 import "core:thread"
 
 @(private="file")
@@ -48,7 +48,6 @@ run_script :: proc(script: string) -> Error {
     defer thread.destroy(t)
 
     state, process_err := os.process_wait(p)
-    _ = os.process_close(p)
     done = true
 
     if process_err != nil {

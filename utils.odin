@@ -1,7 +1,7 @@
 package rbs
 
 import "core:strings"
-import "core:os/os2"
+import "core:os"
 import "core:fmt"
 
 @(private="package")
@@ -17,8 +17,8 @@ create_output :: proc(output: string) -> Error {
         delete(curr)
         curr = new_curr
 
-        if !os2.exists(curr) {
-            err := os2.make_directory(curr)
+        if !os.exists(curr) {
+            err := os.make_directory(curr)
             if err != nil {
                 fmt.eprintfln("Error occurred while trying to create output directory %s", curr)
                 return err

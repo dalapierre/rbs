@@ -1,7 +1,7 @@
 package rcp
 
 import "core:strings"
-import "core:os/os2"
+import "core:os"
 import "core:path/filepath"
 import "core:fmt"
 import rbs ".."
@@ -57,8 +57,8 @@ get_shader_output :: proc(p: rbs.Profile, shader: Shader_Info) -> string {
     real_out := strings.join({ p.output, output_dir }, "/")
     defer delete(real_out)
 
-    if !os2.exists(real_out) {
-        assert(os2.make_directory_all(real_out) == nil, "Failed to create content directory")
+    if !os.exists(real_out) {
+        assert(os.make_directory_all(real_out) == nil, "Failed to create content directory")
     }
 
     return strings.join({ p.output, shader.output }, "/")
