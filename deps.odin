@@ -13,13 +13,16 @@ install_dependencies :: proc(ctx: Context, profile: Profile) -> Error {
         relative_path := strings.join({ profile.output, filepath.base(dep) }, "/")
         defer delete(relative_path)
         
-        install_path, _ := filepath.abs(relative_path, context.allocator)
+        install_path, _ := filepath.abs(filepath.dir(relative_path), context.allocator)
         defer delete(install_path)
+
+        full_path := fmt.aprintf("%s/%s", install_path, filepath.base(relative_path))
+        defer delete(full_path)
 
         dep_path, _ := filepath.abs(dep, context.allocator)
         defer delete(dep_path)
 
-        if err := os.copy_file(install_path, dep_path); err != nil {
+        if err := os.copy_file(full_path, dep_path); err != nil {
             fmt.eprintfln("Failed to copy %s, %s", dep, err)
             return err
         }
