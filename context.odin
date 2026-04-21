@@ -46,17 +46,18 @@ add_command :: proc(ctx: ^Context, cmd: string, p: proc(Context, Profile)) {
 
 add_profile :: proc(ctx: ^Context, name: string, p: Profile) {
     ctx.profiles[name] = p
+
     if ctx.default_profile == "" {
         ctx.default_profile = name
     }
 }
 
-get_profile :: proc(ctx: Context, name: string) -> ^Profile {
+get_profile :: proc(ctx: Context, name: string) -> (Profile, bool) {
     if !(name in ctx.profiles) {
-        return nil
+        return {}, false
     }
     
-    return &ctx.profiles[name]
+    return ctx.profiles[name], true
 }
 
 dispose_context :: proc(ctx: Context) {
@@ -89,14 +90,14 @@ process :: proc(ctx: Context) -> Error {
     }
 
     profile_name := len(cli.args) >= 2? cli.args[1] : ctx.default_profile
-    profile := get_profile(ctx, profile_name)
-    if profile == nil {
+    profile, ok := get_profile(ctx, profile_name)
+    if !ok {
         fmt.eprintfln("Profile %s was not registered", profile_name)
         return .Profile_Not_Found
     }
 
     p := ctx.commands[cmd]
-    p(ctx, profile^)
+    p(ctx, profile)
 
     return nil
 }
