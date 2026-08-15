@@ -62,22 +62,23 @@ You can also have access to CLI flags and arguments by using the `rbs.get_cli(os
 // called through ./rune run -scn:some_scene
 
 process_flags :: proc(ctx: ^rbs.Context) {
-    cli := rbs.get_cli(os.args)
-    defer rbs.dispose_cli(cli)
+	cli := rbs.get_cli(os.args)
+	defer rbs.dispose_cli(cli)
 
-    if "scn" in cli.flags {
-        p := rbs.get_profile(ctx^, DEBUG_PROFILE)
-        f_room := fmt.aprintf("%s=%s", "-define:SCENE", cli.flags[SCENE_FLAG])
+	if "scn" in cli.flags {
+		p, _ := rbs.get_profile(ctx^, "DEBUG_PROFILE")
+        f_room := fmt.aprintf("%s=%s", "-define:SCENE", cli.flags["SCENE_FLAG"])
         p.flags = fmt.aprintf("%s %s", p.flags, f_room)
-    }
+	}
 }
+
 
 ```
 
 
 ### Other features
 
-- Install depenencies such as dlls through `rbs.add_dependency(&ctx, "some_path")`
+- Install dependencies such as dlls through `rbs.add_dependency(&ctx, "some_path")`
 - Run scripts through `rbs.run_script("your script")`
 - Add prebuild steps through `rbs.add_pre_build_step`
 - Add post build steps through `rbs.add_post_build_step`
