@@ -54,16 +54,6 @@ get_platform :: proc(arch: runtime.Odin_Arch_Type, os: runtime.Odin_OS_Type) -> 
                 case .amd64:
                     s_platform = "openbsd_amd64"
                 }
-        case .Haiku:
-            #partial switch arch {
-                case .amd64:
-                    s_platform = "haiku_amd64"
-                }
-        case .Essence:
-            #partial switch arch {
-                case .amd64:
-                    s_platform = "essence_amd64"
-                }
         case .Freestanding:
             #partial switch arch {
                 case .wasm32:
@@ -172,7 +162,7 @@ get_extension :: proc(os: runtime.Odin_OS_Type, mode: runtime.Odin_Build_Mode_Ty
     switch os {
         case .Windows:
             ext, ext_err = get_windows_ext(mode)
-        case .Linux, .FreeBSD, .Essence, .OpenBSD, .NetBSD, .Haiku, .WASI, .JS, .Orca, .Freestanding:
+        case .Linux, .FreeBSD, .OpenBSD, .NetBSD, .WASI, .JS, .Orca, .Freestanding:
             ext, ext_err = get_unix_ext(mode)
         case .Darwin:
             ext, ext_err = get_mac_ext(mode)
