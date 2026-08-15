@@ -19,14 +19,14 @@ First, you need to either clone or add the `rbs` package to the root of your pro
 ```odin
 package build
 
-import "rds"
+import "rbs"
 
 main :: proc() {
     ctx := rbs.init_context()
     defer rbs.dispose_context(ctx)
 
     // define a profile, the first one is always the default
-    rbs.add_profile(&ctx, DEBUG_PROFILE, {
+    rbs.add_profile(&ctx, "DEBUG_PROFILE", {
         entry = "src",          // path to the entry point of your package
         flags = "-vet -debug",  // some flags
         mode = .Executable,     // output type
@@ -37,17 +37,16 @@ main :: proc() {
     })
 
     // default command if you run ./rune
-    rbs.add_command(ctx, "", proc(ctx: rbs.Context, p: rbs.Profile) { rbs.exec_odin_cmd(ctx, .Run, p) })
+    rbs.add_command(&ctx, "", proc(ctx: rbs.Context, p: rbs.Profile) { rbs.exec_odin_cmd(ctx, .Run, p) })
     // run command if you run ./rune run
-    rbs.add_command(ctx, "run", proc(ctx: rbs.Context, p: rbs.Profile) { rbs.exec_odin_cmd(ctx, .Run, p) })
+    rbs.add_command(&ctx, "run", proc(ctx: rbs.Context, p: rbs.Profile) { rbs.exec_odin_cmd(ctx, .Run, p) })
     // build command if you run ./rune build
-    rbs.add_command(ctx, "build", proc(ctx: rbs.Context, p: rbs.Profile) { rbs.exec_odin_cmd(ctx, .Build, p) })
+    rbs.add_command(&ctx, "build", proc(ctx: rbs.Context, p: rbs.Profile) { rbs.exec_odin_cmd(ctx, .Build, p) })
 
 
     // process the build by looking at the arguments passed to the CLI
     rbs.process(ctx)
 }
-
 ```
 
 From there, you can build the file and should be able to call `./rune`, `./rune run` and `./rune build`.
