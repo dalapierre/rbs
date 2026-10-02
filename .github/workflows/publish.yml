@@ -35,7 +35,7 @@ jobs:
         run: ./rbs install ci
 
       - name: Create zip
-        run: zip -r "rbs_${{ inputs.version }}.zip" bin
+        run: (cd bin && zip -r "../rbs_${{ inputs.version }}.zip" rbs)
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
