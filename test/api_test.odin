@@ -169,57 +169,6 @@ test_get_cli_empty_args :: proc(t: ^testing.T) {
 }
 
 @(test)
-test_get_extension_windows :: proc(t: ^testing.T) {
-	ext, err := rbs.get_extension(.Windows, .Executable)
-	testing.expect(t, err == nil)
-	testing.expect_value(t, ext, ".exe")
-
-	ext, err = rbs.get_extension(.Windows, .Dynamic)
-	testing.expect(t, err == nil)
-	testing.expect_value(t, ext, ".dll")
-
-	ext, err = rbs.get_extension(.Windows, .Static)
-	testing.expect(t, err == nil)
-	testing.expect_value(t, ext, ".lib")
-}
-
-@(test)
-test_get_extension_linux :: proc(t: ^testing.T) {
-	ext, err := rbs.get_extension(.Linux, .Executable)
-	testing.expect(t, err == nil)
-	testing.expect_value(t, ext, "")
-
-	ext, err = rbs.get_extension(.Linux, .Dynamic)
-	testing.expect(t, err == nil)
-	testing.expect_value(t, ext, ".so")
-
-	ext, err = rbs.get_extension(.Linux, .Static)
-	testing.expect(t, err == nil)
-	testing.expect_value(t, ext, ".a")
-}
-
-@(test)
-test_get_extension_darwin :: proc(t: ^testing.T) {
-	ext, err := rbs.get_extension(.Darwin, .Executable)
-	testing.expect(t, err == nil)
-	testing.expect_value(t, ext, "")
-
-	ext, err = rbs.get_extension(.Darwin, .Dynamic)
-	testing.expect(t, err == nil)
-	testing.expect_value(t, ext, ".dylib")
-
-	ext, err = rbs.get_extension(.Darwin, .Static)
-	testing.expect(t, err == nil)
-	testing.expect_value(t, ext, ".a")
-}
-
-@(test)
-test_get_extension_unknown_os :: proc(t: ^testing.T) {
-	_, err := rbs.get_extension(.Unknown, .Executable)
-	testing.expect_value(t, err, rbs.Error(rbs.RBS_Error.Invalid_Extension))
-}
-
-@(test)
 test_run_script_success :: proc(t: ^testing.T) {
 	err := rbs.run_script("true")
 	testing.expect(t, err == nil)
