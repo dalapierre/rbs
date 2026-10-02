@@ -40,11 +40,13 @@ Examples: CLI parsing → `cli.odin`; context/profiles/commands → `context.odi
 
 Current owners (`src/`): `cli`, `context`, `deps`, `errors`, `exec`, `platform`, `scripting`, `testing`, `utils`.
 
-**Required:** every new `.odin` file must start with a multi-line top comment (≤80 chars per line) stating the file’s purpose. Existing files already follow this.
+**Required:** every new `.odin` file must start with a top comment stating the
+file’s purpose. Existing files already follow this.
 
 ## Conventions for changes
 
 - Language: **Odin**. Match existing style (tabs in tests, `:: proc`, package-level privacy with `@(private="package"|"file")`).
+- Comments: only **public** procedure definitions get a doc comment. Do not add comments elsewhere (private procs, types, inline narration) unless the user asks. Form: use `//` when the whole comment fits on one line (≤80 chars); otherwise use `/* */`. Public API docs must list each argument on its own line as `* name - Description` (capitalize the description; no trailing `.`), then a blank line, then `returns …` (no `*`) when the proc has a return value.
 - Prefer extending public procs on `Context`/`Profile` over changing CLI parsing semantics without tests.
 - Tests live in `src/` as `*_test.odin` siblings (same `package rbs`) so package-private APIs are testable. Each owner file should have a matching `*_test.odin`.
 - Odin excludes `*_test.odin` from normal builds; only `odin test` compiles them.

@@ -1,5 +1,7 @@
-// Shell/script process runner with streamed stdout/stderr
-// (used by exec and user scripts).
+/*
+	Shell/script process runner with streamed stdout/stderr
+	(used by exec and user scripts).
+*/
 package rbs
 
 import "core:fmt"
@@ -14,6 +16,13 @@ T_Data :: struct {
     process_done: ^bool
 }
 
+/*
+	Run a shell command string and stream its stdout/stderr.
+
+	* script - Command line to execute (via bash -c on Linux)
+
+	returns nil on success, or .Script_Error on failure
+*/
 run_script :: proc(script: string) -> Error {
 	cmds: []string
 	if ODIN_OS == .Linux {

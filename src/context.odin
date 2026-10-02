@@ -1,5 +1,7 @@
-// Build context: profiles, commands, deps, pre/post steps,
-// and process() dispatch from CLI args.
+/*
+	Build context: profiles, commands, deps, pre/post steps,
+	and process() dispatch from CLI args.
+*/
 package rbs
 
 import "core:fmt"
@@ -32,6 +34,11 @@ Profile :: struct {
     arch:   runtime.Odin_Arch_Type
 }
 
+/*
+	Allocate an empty build context.
+
+	returns an empty context ready for profiles and commands
+*/
 init_context :: proc() -> Context {
     return {
         commands            = make(map[string]Command),
@@ -42,10 +49,24 @@ init_context :: proc() -> Context {
     }
 }
 
+/*
+	Register a named command handler.
+
+	* ctx - Context to mutate
+	* cmd - Command name (first CLI arg)
+	* p - Handler invoked with the resolved profile
+*/
 add_command :: proc(ctx: ^Context, cmd: string, p: proc(Context, Profile)) {
     ctx.commands[cmd] = p
 }
 
+/*
+	Register a named build profile. The first added becomes the default.
+
+	* ctx - Context to mutate
+	* name - Profile key used on the CLI
+	* p - Profile configuration
+*/
 add_profile :: proc(ctx: ^Context, name: string, p: Profile) {
     ctx.profiles[name] = p
 
@@ -54,6 +75,14 @@ add_profile :: proc(ctx: ^Context, name: string, p: Profile) {
     }
 }
 
+/*
+	Look up a profile by name.
+
+	* ctx - Context to search
+	* name - Profile key
+
+	returns the profile and true if found, otherwise {}, false
+*/
 get_profile :: proc(ctx: Context, name: string) -> (Profile, bool) {
     if !(name in ctx.profiles) {
         return {}, false
@@ -62,6 +91,11 @@ get_profile :: proc(ctx: Context, name: string) -> (Profile, bool) {
     return ctx.profiles[name], true
 }
 
+/*
+	Free maps and slices owned by the context.
+
+	* ctx - Context previously returned from init_context
+*/
 dispose_context :: proc(ctx: Context) {
     delete(ctx.commands)
     delete(ctx.profiles)
@@ -70,21 +104,45 @@ dispose_context :: proc(ctx: Context) {
     delete(ctx.dependencies)
 }
 
+/*
+	Append a step run before the odin build/run command.
+
+	* ctx - Context to mutate
+	* cmd - Step callback
+*/
 add_pre_build_step :: proc(ctx: ^Context, cmd: Command) {
     append(&ctx.pre_build_steps, cmd)
 }
 
+/*
+	Append a step run after a successful odin build/run command.
+
+	* ctx - Context to mutate
+	* cmd - Step callback
+*/
 add_post_build_step :: proc(ctx: ^Context, cmd: Command) {
     append(&ctx.post_build_steps, cmd)
 }
 
+/*
+	Register a dependency path to copy into the profile output.
+
+	* ctx - Context to mutate
+	* dep - Filesystem path of the dependency
+*/
 add_dependency :: proc(ctx: ^Context, dep: string) { append(&ctx.dependencies, dep) }
 
+/*
+	Parse CLI args, resolve command + profile, and invoke the handler.
+
+	* ctx - Fully configured build context
+
+	returns nil on success, or an Error if command/profile is missing
+*/
 process :: proc(ctx: Context) -> Error {
     cli := get_cli(os.args)
     defer dispose_cli(cli)
 
-    // get profile or first added
     cmd := len(cli.args) == 0 ? "" : cli.args[0]
     if !(cmd in ctx.commands) {
         fmt.eprintfln("Command %s was not registered", cmd)

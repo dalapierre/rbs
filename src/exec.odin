@@ -1,5 +1,7 @@
-// Odin run/build/test execution: output dir, deps, pre/post steps,
-// and the constructed odin command line.
+/*
+	Odin run/build/test execution: output dir, deps, pre/post steps,
+	and the constructed odin command line.
+*/
 package rbs
 
 import "core:fmt"
@@ -11,7 +13,15 @@ Builtin_Command :: enum {
 	Test,
 }
 
-// Run the project (build/run) or execute tests via `odin test`.
+/*
+	Run a builtin command against a profile.
+
+	* ctx - Build context (deps and pre/post steps)
+	* cmd - Build, Run, or Test
+	* profile - Target profile (entry, output, flags, platform)
+
+	returns nil on success, or an Error from setup or execution
+*/
 exec_cmd :: proc(ctx: Context, cmd: Builtin_Command, profile: Profile) -> Error {
 	if cmd == .Test {
 		return exec_test(profile)
@@ -25,7 +35,6 @@ exec_cmd :: proc(ctx: Context, cmd: Builtin_Command, profile: Profile) -> Error 
 
 	install_dependencies(ctx, profile)
 
-	// run pre build
 	for step in ctx.pre_build_steps {
 		step(ctx, profile)
 	}
@@ -40,7 +49,6 @@ exec_cmd :: proc(ctx: Context, cmd: Builtin_Command, profile: Profile) -> Error 
 
 	if exec_err := run_script(script); exec_err != nil do return exec_err
 
-	// run post build
 	for step in ctx.post_build_steps {
 		step(ctx, profile)
 	}

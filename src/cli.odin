@@ -1,5 +1,7 @@
-// CLI argument and flag parsing (-key:value / --key).
-// Builds Parsed_Args for process() and custom flag handling.
+/*
+	CLI argument and flag parsing (-key:value / --key).
+	Builds Parsed_Args for process() and custom flag handling.
+*/
 package rbs
 
 import "core:strings"
@@ -13,6 +15,14 @@ Parsed_Args :: struct {
     args: [dynamic]string,
 }
 
+/*
+	Parse raw argv into positional args and flags.
+
+	* args - Full argv (program name at index 0 is skipped)
+	* allocator - Used for the returned maps/slices
+
+	returns parsed positional args and flags
+*/
 get_cli :: proc(args: []string, allocator := context.allocator) -> Parsed_Args {
     parsed := Parsed_Args{
         flags = make(map[string]string),
@@ -52,6 +62,11 @@ get_cli :: proc(args: []string, allocator := context.allocator) -> Parsed_Args {
     return parsed
 }
 
+/*
+	Free maps allocated by get_cli.
+
+	* parsed - Value returned from get_cli
+*/
 dispose_cli :: proc(parsed: Parsed_Args) {
     delete(parsed.flags)
     delete(parsed.args)

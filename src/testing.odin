@@ -16,16 +16,13 @@ PACKAGE_FLAG :: "p"
 @(private="file")
 DEFAULT_FLAG_VAL :: "true"
 
-// Options derived from CLI flags for a test run.
 @(private="package")
 Test_Options :: struct {
-	test_name:    string, // -t:<name>, empty if unset
-	file:         string, // -f:<file>, empty if unset
-	package_path: string, // -p:<package>, empty if unset
+	test_name:    string,
+	file:         string,
+	package_path: string,
 }
 
-// Resolve -t / -f / -p from a parsed CLI. Returns an error if a flag
-// is present without a value (e.g. bare `-t`).
 @(private="package")
 parse_test_options :: proc(flags: map[string]string) -> (Test_Options, Error) {
 	opts: Test_Options
@@ -57,8 +54,6 @@ parse_test_options :: proc(flags: map[string]string) -> (Test_Options, Error) {
 	return opts, nil
 }
 
-// Pick the path passed to `odin test`.
-// Priority: -f > -p > profile `entry`.
 @(private="package")
 resolve_test_path :: proc(
 	opts: Test_Options,
