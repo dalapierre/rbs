@@ -10,7 +10,7 @@ main :: proc() {
 
     rbs.add_profile(&ctx, "default", {
         arch    = ODIN_ARCH,
-        entry   = "tests",
+        entry   = "src",
         mode    = .Executable,
         os      = ODIN_OS,
     })

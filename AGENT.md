@@ -6,9 +6,8 @@ Odin library that lets projects define build profiles and CLI commands in a root
 
 | Path | Role |
 |------|------|
-| `src/` | `package rbs` — core API |
-| `test/` | `package test` — API tests via `core:testing` |
-| `ols.json` | OLS checker paths: `src`, `test` |
+| `src/` | `package rbs` — core API and co-located `*_test.odin` tests |
+| `ols.json` | OLS checker paths: `src`, `build.odin` |
 
 ## Consumer model
 
@@ -39,7 +38,7 @@ Each `.odin` file is its own content context. Put new code in the existing file 
 
 Examples: CLI parsing → `cli.odin`; context/profiles/commands → `context.odin`; odin run/build orchestration → `exec.odin`; a new “test” exec mode stays in `exec.odin`, but test-only helpers/types would go in a new `testing.odin`.
 
-Current owners (`src/` unless noted): `cli`, `context`, `deps`, `errors`, `exec`, `platform`, `scripting`, `testing`, `utils`; `test/` → `api_test`.
+Current owners (`src/`): `cli`, `context`, `deps`, `errors`, `exec`, `platform`, `scripting`, `testing`, `utils`.
 
 **Required:** every new `.odin` file must start with a multi-line top comment (≤80 chars per line) stating the file’s purpose. Existing files already follow this.
 
@@ -47,7 +46,8 @@ Current owners (`src/` unless noted): `cli`, `context`, `deps`, `errors`, `exec`
 
 - Language: **Odin**. Match existing style (tabs in tests, `:: proc`, package-level privacy with `@(private="package"|"file")`).
 - Prefer extending public procs on `Context`/`Profile` over changing CLI parsing semantics without tests.
-- Add/adjust tests in `test/api_test.odin` for API behavior; import is `rbs "../src"`.
+- Tests live in `src/` as `*_test.odin` siblings (same `package rbs`) so package-private APIs are testable. Each owner file should have a matching `*_test.odin`.
+- Odin excludes `*_test.odin` from normal builds; only `odin test` compiles them.
 - If a test uses `core:os` to create files or directories, always clean them up after the test (e.g. `defer os.remove_all(tmp)`), so nothing is left behind in CI or locally.
 - Do not commit build artifacts (`bin/`, `*.exe`).
 - README examples may say `rds` — the real package name is **`rbs`**.
@@ -57,7 +57,7 @@ Current owners (`src/` unless noted): `cli`, `context`, `deps`, `errors`, `exec`
 After any new or changed code is complete, run the test suite and read the full output before considering the task done:
 
 ```text
-odin test test
+odin test src
 ```
 
 **Completion criteria** — both must be true:

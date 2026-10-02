@@ -37,6 +37,7 @@ resolve_build_path :: proc(path: string, allocator := context.allocator) -> (str
 
 // Create the output directory if needed. No-op when it already exists
 // (`os.make_directory_all` returns `.Exist` in that case on some platforms).
+@(private="package")
 create_output :: proc(output: string) -> Error {
 	if output == "" do return nil
 
