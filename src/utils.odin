@@ -1,5 +1,7 @@
-// Small shared path helpers: build-program root resolution,
-// nested output dirs, and trailing-slash normalization.
+/*
+	Small shared path helpers: build-program root resolution,
+	nested output dirs, and trailing-slash normalization.
+*/
 package rbs
 
 import "core:strings"
@@ -7,8 +9,6 @@ import "core:os"
 import "core:fmt"
 import "core:path/filepath"
 
-// Directory containing the build driver (rbs / rune), i.e. where
-// the build file lives when the binary is built next to it.
 @(private="package")
 get_build_root :: proc(allocator := context.allocator) -> (string, Error) {
 	exe_abs, err := filepath.abs(os.args[0], allocator)
@@ -17,8 +17,6 @@ get_build_root :: proc(allocator := context.allocator) -> (string, Error) {
 	return strings.clone(filepath.dir(exe_abs), allocator), nil
 }
 
-// Resolve path against the build program root when relative.
-// Absolute paths are returned cloned unchanged.
 @(private="package")
 resolve_build_path :: proc(path: string, allocator := context.allocator) -> (string, Error) {
 	if path == "" {
@@ -43,7 +41,7 @@ create_output :: proc(output: string) -> Error {
 	if err != nil do return err
 	defer delete(abs_out)
 
-	if dir_err := os.make_directory_all(abs_out); dir_err != nil {
+	if dir_err := os.make_directory_all(abs_out); dir_err != nil && dir_err != .Exist {
 		fmt.eprintfln("Error occurred while trying to create output directory %s", abs_out)
 		return dir_err
 	}

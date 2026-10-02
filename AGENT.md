@@ -6,9 +6,8 @@ Odin library that lets projects define build profiles and CLI commands in a root
 
 | Path | Role |
 |------|------|
-| `src/` | `package rbs` — core API |
-| `test/` | `package test` — API tests via `core:testing` |
-| `ols.json` | OLS checker paths: `src`, `test` |
+| `src/` | `package rbs` — core API and co-located `*_test.odin` tests |
+| `ols.json` | OLS checker paths: `src`, `build.odin` |
 
 ## Consumer model
 
@@ -39,15 +38,18 @@ Each `.odin` file is its own content context. Put new code in the existing file 
 
 Examples: CLI parsing → `cli.odin`; context/profiles/commands → `context.odin`; odin run/build orchestration → `exec.odin`; a new “test” exec mode stays in `exec.odin`, but test-only helpers/types would go in a new `testing.odin`.
 
-Current owners (`src/` unless noted): `cli`, `context`, `deps`, `errors`, `exec`, `platform`, `scripting`, `testing`, `utils`; `test/` → `api_test`.
+Current owners (`src/`): `cli`, `context`, `deps`, `errors`, `exec`, `platform`, `scripting`, `testing`, `utils`.
 
-**Required:** every new `.odin` file must start with a multi-line top comment (≤80 chars per line) stating the file’s purpose. Existing files already follow this.
+**Required:** every new `.odin` file must start with a top comment stating the
+file’s purpose. Existing files already follow this.
 
 ## Conventions for changes
 
 - Language: **Odin**. Match existing style (tabs in tests, `:: proc`, package-level privacy with `@(private="package"|"file")`).
+- Comments: only **public** procedure definitions get a doc comment. Do not add comments elsewhere (private procs, types, inline narration) unless the user asks. Form: use `//` when the whole comment fits on one line (≤80 chars); otherwise use `/* */`. Public API docs must list each argument on its own line as `* name - Description` (capitalize the description; no trailing `.`), then a blank line, then `returns …` (no `*`) when the proc has a return value.
 - Prefer extending public procs on `Context`/`Profile` over changing CLI parsing semantics without tests.
-- Add/adjust tests in `test/api_test.odin` for API behavior; import is `rbs "../src"`.
+- Tests live in `src/` as `*_test.odin` siblings (same `package rbs`) so package-private APIs are testable. Each owner file should have a matching `*_test.odin`.
+- Odin excludes `*_test.odin` from normal builds; only `odin test` compiles them.
 - If a test uses `core:os` to create files or directories, always clean them up after the test (e.g. `defer os.remove_all(tmp)`), so nothing is left behind in CI or locally.
 - Do not commit build artifacts (`bin/`, `*.exe`).
 - README examples may say `rds` — the real package name is **`rbs`**.
@@ -57,7 +59,13 @@ Current owners (`src/` unless noted): `cli`, `context`, `deps`, `errors`, `exec`
 After any new or changed code is complete, run the test suite and read the full output before considering the task done:
 
 ```text
-odin test test
+// prerequisite, run `odin build .` from root to make sure rbs is built
+./rbs test
+```
+
+to run a specific test use rbs through
+```text
+./rbs test -t:{testName}
 ```
 
 **Completion criteria** — both must be true:
