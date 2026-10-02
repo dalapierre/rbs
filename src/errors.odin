@@ -13,6 +13,7 @@ RBS_Error :: enum {
     Invalid_Test_Flag,
     Invalid_File_Flag,
     Invalid_Package_Flag,
+    Invalid_Copy_Filter,
 }
 
 Error :: union #shared_nil {

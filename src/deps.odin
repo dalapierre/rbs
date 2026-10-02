@@ -1,11 +1,31 @@
-// Dependency install into the profile output dir,
-// plus recursive copy helpers for build assets.
+/*
+	Dependency install into the profile output dir,
+	plus recursive copy helpers for build assets.
+*/
 package rbs
 
 import "core:fmt"
 import "core:os"
 import "core:path/filepath"
 import "core:strings"
+import "core:text/regex"
+
+Copy_Filter_Mode :: enum {
+	Include,
+	Exclude,
+}
+
+Copy_Option :: struct {
+	pattern: string,
+	mode:    Copy_Filter_Mode,
+}
+
+@(private="file")
+Compiled_Copy_Filter :: struct {
+	re:      regex.Regular_Expression,
+	mode:    Copy_Filter_Mode,
+	capture: regex.Capture,
+}
 
 @(private="package")
 install_dependencies :: proc(ctx: Context, profile: Profile) -> Error {
@@ -33,9 +53,18 @@ install_dependencies :: proc(ctx: Context, profile: Profile) -> Error {
 	return nil
 }
 
-// Copy `from` (relative to the build program root, or absolute) into
-// `{profile.output}/{to}`. When `to` is empty, copies into `profile.output`.
-copy_to_output :: proc(p: Profile, from: string, to: string) -> Error {
+/*
+	Copy from into {profile.output}/{to}.
+
+	* p - Profile whose output is the copy destination root
+	* from - Source path (build-root relative or absolute)
+	* to - Path under p.output; empty copies into p.output itself
+	* opt - Optional name filter; nil copies every file; Include keeps
+	  only base names matching pattern; Exclude skips matches
+
+	returns nil on success, or an Error on path/filter/copy failure
+*/
+copy_to_output :: proc(p: Profile, from: string, to: string, opt: ^Copy_Option = nil) -> Error {
 	abs_from, from_err := resolve_build_path(from)
 	if from_err != nil do return from_err
 	defer delete(abs_from)
@@ -54,13 +83,30 @@ copy_to_output :: proc(p: Profile, from: string, to: string) -> Error {
 	}
 	defer delete(dest)
 
-	// Normalize separators so trim_prefix matches read_dir fullpaths.
 	from_norm, from_alloc := strings.replace_all(abs_from, "\\", "/")
 	defer if from_alloc do delete(from_norm)
 	dest_norm, dest_alloc := strings.replace_all(dest, "\\", "/")
 	defer if dest_alloc do delete(dest_norm)
 
-	if err := process_copy(from_norm, from_norm, dest_norm); err != nil {
+	filter: ^Compiled_Copy_Filter
+	compiled: Compiled_Copy_Filter
+	if opt != nil {
+		re, re_err := regex.create(opt.pattern, {.No_Capture})
+		if re_err != nil {
+			fmt.eprintfln("Invalid copy filter regex %q: %v", opt.pattern, re_err)
+			return .Invalid_Copy_Filter
+		}
+		compiled.re = re
+		compiled.mode = opt.mode
+		compiled.capture = regex.preallocate_capture()
+		filter = &compiled
+	}
+	defer if filter != nil {
+		regex.destroy(compiled.re)
+		regex.destroy(compiled.capture)
+	}
+
+	if err := process_copy(from_norm, from_norm, dest_norm, filter); err != nil {
 		return err
 	}
 
@@ -82,7 +128,20 @@ copy_to_output :: proc(p: Profile, from: string, to: string) -> Error {
 }
 
 @(private="file")
-process_copy :: proc(original_from: string, from: string, to: string) -> Error {
+should_copy_file :: proc(filter: ^Compiled_Copy_Filter, path: string) -> bool {
+	if filter == nil do return true
+
+	name := filepath.base(path)
+	_, matched := regex.match_with_preallocated_capture(filter.re, name, &filter.capture)
+	switch filter.mode {
+	case .Include: return matched
+	case .Exclude: return !matched
+	}
+	return true
+}
+
+@(private="file")
+process_copy :: proc(original_from: string, from: string, to: string, filter: ^Compiled_Copy_Filter) -> Error {
 	if os.is_dir(from) {
 		extra := strings.trim_prefix(from, original_from)
 		new_dir, _ := strings.concatenate({to, extra})
@@ -115,10 +174,14 @@ process_copy :: proc(original_from: string, from: string, to: string) -> Error {
 			name, was_allocation := strings.replace(file.fullpath, "\\", "/", -1)
 			defer if was_allocation do delete(name)
 
-			copy_err := process_copy(original_from, name, to)
+			copy_err := process_copy(original_from, name, to, filter)
 			if copy_err != nil { return copy_err }
 		}
 
+		return nil
+	}
+
+	if !should_copy_file(filter, from) {
 		return nil
 	}
 

@@ -10,8 +10,9 @@ main :: proc() {
 
     rbs.add_profile(&ctx, "default", {
         arch    = ODIN_ARCH,
-        entry   = "tests",
+        entry   = "src",
         mode    = .Executable,
+        name    = "rbs_test",
         os      = ODIN_OS,
     })
 
@@ -34,5 +35,6 @@ main :: proc() {
 run_tests :: proc(ctx: rbs.Context, p: rbs.Profile) { rbs.exec_cmd(ctx, .Test, p) }
 
 run_ci :: proc(ctx: rbs.Context, p: rbs.Profile) {
-    rbs.copy_to_output(p, "src", "rbs")
+    opt := rbs.Copy_Option{pattern = "_test", mode = .Exclude}
+    rbs.copy_to_output(p, "src", "rbs", &opt)
 }

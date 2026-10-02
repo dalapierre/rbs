@@ -1,5 +1,7 @@
-// Target platform strings (-target:) and binary/library
-// extensions per OS and build mode.
+/*
+	Target platform strings (-target:) and binary/library
+	extensions per OS and build mode.
+*/
 package rbs
 
 import "base:runtime"
