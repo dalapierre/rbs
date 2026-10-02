@@ -37,6 +37,6 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v6
         with:
-          name: rbs_v${{ inputs.version }}
+          name: rbs-v${{ inputs.version }}
           path: bin
           if-no-files-found: error
