@@ -31,7 +31,7 @@ main :: proc() {
     }
 }
 
-run_tests :: proc(ctx: rbs.Context, p: rbs.Profile) { rbs.exec_odin_cmd(ctx, .Test, p) }
+run_tests :: proc(ctx: rbs.Context, p: rbs.Profile) { rbs.exec_cmd(ctx, .Test, p) }
 
 run_ci :: proc(ctx: rbs.Context, p: rbs.Profile) {
     rbs.copy_to_output(p, "src", "rbs")

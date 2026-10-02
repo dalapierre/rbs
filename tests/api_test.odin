@@ -341,6 +341,6 @@ test_resolve_test_path :: proc(t: ^testing.T) {
 
 @(test)
 test_odin_command_test_variant_exists :: proc(t: ^testing.T) {
-	testing.expect(t, int(rbs.Odin_Command.Test) != int(rbs.Odin_Command.Build))
-	testing.expect(t, int(rbs.Odin_Command.Test) != int(rbs.Odin_Command.Run))
+	testing.expect(t, int(rbs.Builtin_Command.Test) != int(rbs.Builtin_Command.Build))
+	testing.expect(t, int(rbs.Builtin_Command.Test) != int(rbs.Builtin_Command.Run))
 }

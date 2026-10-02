@@ -48,9 +48,9 @@ main :: proc() {
     rbs.process(ctx)
 }
 
-run :: proc(ctx: rbs.Context, p: rbs.Profile) { rbs.exec_odin_cmd(ctx, .Run, p) }
+run :: proc(ctx: rbs.Context, p: rbs.Profile) { rbs.exec_cmd(ctx, .Run, p) }
 
-build :: proc(ctx: rbs.Context, p: rbs.Profile) { rbs.exec_odin_cmd(ctx, .Build, p) }
+build :: proc(ctx: rbs.Context, p: rbs.Profile) { rbs.exec_cmd(ctx, .Build, p) }
 
 ```
 

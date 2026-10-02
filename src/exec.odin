@@ -5,14 +5,14 @@ package rbs
 import "core:fmt"
 import "core:os"
 
-Odin_Command :: enum {
+Builtin_Command :: enum {
 	Build,
 	Run,
 	Test,
 }
 
 // Run the project (build/run) or execute tests via `odin test`.
-exec_odin_cmd :: proc(ctx: Context, cmd: Odin_Command, profile: Profile) -> Error {
+exec_cmd :: proc(ctx: Context, cmd: Builtin_Command, profile: Profile) -> Error {
 	if cmd == .Test {
 		return exec_test(profile)
 	}
@@ -69,7 +69,7 @@ exec_test :: proc(profile: Profile) -> Error {
 }
 
 @(private="file")
-get_cmd_string :: proc(cmd: Odin_Command) -> string {
+get_cmd_string :: proc(cmd: Builtin_Command) -> string {
 	switch cmd {
 		case .Build:
 			return "build"

@@ -21,7 +21,7 @@ odin build . -out:rune
 
 - First registered profile is the default.
 - CLI shape: `./rune <cmd> [profile]`; flags via `-key:value` / `--key:value` (`get_cli` / `dispose_cli`).
-- Typical commands wire to `exec_odin_cmd(ctx, .Run|.Build, profile)`.
+- Typical commands wire to `exec_cmd(ctx, .Run|.Build, profile)`.
 
 ## Core API (`package rbs`)
 
@@ -29,7 +29,7 @@ odin build . -out:rune
 - **Profile**: `flags`, `name`, `output`, `entry`, `mode`, `os`, `arch` (`runtime.Odin_*` types)
 - Register: `add_profile`, `add_command`, `add_pre_build_step`, `add_post_build_step`, `add_dependency`
 - Run: `process` → resolve command + profile → invoke `Command` proc
-- Build: `exec_odin_cmd` creates output dir, installs deps, pre steps, `odin run|build … -target:…`, post steps
+- Build: `exec_cmd` creates output dir, installs deps, pre steps, `odin run|build … -target:…`, post steps
 - Helpers: `run_script`, `copy_to_output` (from build-root → profile output), platform/extension helpers in `platform.odin`
 - Errors: `Error` union (`os.Error` | `RBS_Error` | `Allocator_Error`)
 
