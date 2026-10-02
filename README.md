@@ -1,5 +1,15 @@
 # rbs
 
+### Installation
+
+1. Download the latest release zip from the [GitHub Releases](https://github.com/dalapierre/rbs/releases/latest) page.
+2. Extract the archive.
+3. Copy the `rbs` directory into the root of your project.
+
+You can also clone this repository and copy `src` as `rbs` into your project if you prefer working from source.
+
+---
+
 `WARNING: Still in development`
 
 RBS Stands for `Rune Build System`. It is a way to define build profiles for Odin projects and is an iteration over the [Rune](https://github.com/dalapierre/rune) CLI I previously built.
@@ -14,7 +24,7 @@ The idea is that you create a simply odin file (usually called `rbs.odin`) that 
 
 #### Basic rbs.odin definition
 
-First, you need to either clone or add the `rbs` package to the root of your project. Then, you create a `rbs.odin` file and paste the following code:
+With the `rbs` package in your project root, create a `rbs.odin` file and paste the following code:
 
 ```odin
 package build
