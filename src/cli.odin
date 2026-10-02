@@ -1,3 +1,5 @@
+// CLI argument and flag parsing (-key:value / --key).
+// Builds Parsed_Args for process() and custom flag handling.
 package rbs
 
 import "core:strings"

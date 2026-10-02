@@ -1,3 +1,5 @@
+// Target platform strings (-target:) and binary/library
+// extensions per OS and build mode.
 package rbs
 
 import "base:runtime"
@@ -155,6 +157,7 @@ get_mac_ext :: proc(mode: runtime.Odin_Build_Mode_Type) -> (string, Error) {
     return "", .Invalid_Extension
 }
 
+@(private="package")
 get_extension :: proc(os: runtime.Odin_OS_Type, mode: runtime.Odin_Build_Mode_Type) -> (string, Error) {
     ext: string
     ext_err: Error

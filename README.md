@@ -37,16 +37,20 @@ main :: proc() {
     })
 
     // default command if you run ./rune
-    rbs.add_command(ctx, "", proc(ctx: rbs.Context, p: rbs.Profile) { rbs.exec_odin_cmd(ctx, .Run, p) })
+    rbs.add_command(ctx, "", run)
     // run command if you run ./rune run
-    rbs.add_command(ctx, "run", proc(ctx: rbs.Context, p: rbs.Profile) { rbs.exec_odin_cmd(ctx, .Run, p) })
+    rbs.add_command(ctx, "run", run)
     // build command if you run ./rune build
-    rbs.add_command(ctx, "build", proc(ctx: rbs.Context, p: rbs.Profile) { rbs.exec_odin_cmd(ctx, .Build, p) })
+    rbs.add_command(ctx, "build", build)
 
 
     // process the build by looking at the arguments passed to the CLI
     rbs.process(ctx)
 }
+
+run :: proc(ctx: rbs.Context, p: rbs.Profile) { rbs.exec_cmd(ctx, .Run, p) }
+
+build :: proc(ctx: rbs.Context, p: rbs.Profile) { rbs.exec_cmd(ctx, .Build, p) }
 
 ```
 
@@ -83,6 +87,3 @@ process_flags :: proc(ctx: ^rbs.Context) {
 - Add prebuild steps through `rbs.add_pre_build_step`
 - Add post build steps through `rbs.add_post_build_step`
 
-### rcp (Rune Content Pipeline)
-
-The pipeline is currently in development and is at the early stages. It is meant to define how to process certain assets such as shaders when making games. It also caches assets under `.rcp-cache` so that they are not reprocessed unless they change.
