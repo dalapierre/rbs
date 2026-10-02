@@ -70,12 +70,11 @@ process_copy :: proc(original_from: string, from: string, to: string) -> Error {
             fmt.eprintfln("Failed to read files from %s: %s", from, err)
             return err
         }
-        defer delete(files)
+        defer os.file_info_slice_delete(files, context.allocator)
 
         for file in files {
-            defer os.file_info_delete(file, context.allocator)
-            name, _ := strings.replace(file.fullpath, "\\", "/", -1)
-            defer delete(name)
+            name, was_allocation := strings.replace(file.fullpath, "\\", "/", -1)
+            defer if was_allocation do delete(name)
 
             copy_err := process_copy(original_from, name, to)
             if copy_err != nil { return copy_err }
