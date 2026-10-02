@@ -44,7 +44,7 @@ Each `.odin` file is its own content context. Put new code in the existing file 
 
 Examples: CLI parsing → `cli.odin`; context/profiles/commands → `context.odin`; odin run/build orchestration → `exec.odin`; a new “test” exec mode stays in `exec.odin`, but test-only helpers/types would go in a new `testing.odin`.
 
-Current owners (`src/` unless noted): `cli`, `context`, `deps`, `errors`, `exec`, `platform`, `scripting`, `utils`; `rcp/` → `cache`, `logger`, `process_shaders`; `test/` → `api_test`.
+Current owners (`src/` unless noted): `cli`, `context`, `deps`, `errors`, `exec`, `platform`, `scripting`, `testing`, `utils`; `rcp/` → `cache`, `logger`, `process_shaders`; `test/` → `api_test`.
 
 **Required:** every new `.odin` file must start with a multi-line top comment (≤80 chars per line) stating the file’s purpose. Existing files already follow this.
 

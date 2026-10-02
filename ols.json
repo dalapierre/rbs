@@ -4,6 +4,6 @@
     "enable_hover": true,
     "enable_snippets": true,
     "profiles": [
-        { "name": "default", "checker_path": ["src", "test"] }
+        { "name": "default", "checker_path": ["src", "test", "build.odin"] }
     ]
 }
