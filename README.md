@@ -10,8 +10,6 @@ You can also clone this repository and copy `src` as `rbs` into your project if 
 
 ---
 
-`WARNING: Still in development`
-
 RBS Stands for `Rune Build System`. It is a way to define build profiles for Odin projects and is an iteration over the [Rune](https://github.com/dalapierre/rune) CLI I previously built.
 
 ### Purpose
