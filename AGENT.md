@@ -57,7 +57,13 @@ Current owners (`src/`): `cli`, `context`, `deps`, `errors`, `exec`, `platform`,
 After any new or changed code is complete, run the test suite and read the full output before considering the task done:
 
 ```text
-odin test src
+// prerequisite, run `odin build .` from root to make sure rbs is built
+./rbs test
+```
+
+to run a specific test use rbs through
+```text
+./rbs test -t:{testName}
 ```
 
 **Completion criteria** — both must be true:

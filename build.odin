@@ -12,6 +12,7 @@ main :: proc() {
         arch    = ODIN_ARCH,
         entry   = "src",
         mode    = .Executable,
+        name    = "rbs_test",
         os      = ODIN_OS,
     })
 

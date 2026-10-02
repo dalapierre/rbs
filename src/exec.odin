@@ -62,7 +62,17 @@ exec_test :: proc(profile: Profile) -> Error {
 	flags := append_test_flags(profile.flags, opts, file_mode)
 	defer delete(flags)
 
-	script := fmt.tprintf("odin test %s %s", path, flags)
+	script: string
+	if profile.output != "" {
+		if output_err := create_output(profile.output); output_err != nil {
+			return output_err
+		}
+		out := ensure_trailing_slash(profile.output)
+		defer delete(out)
+		script = fmt.tprintf("odin test %s -out:%s%s %s", path, out, profile.name, flags)
+	} else {
+		script = fmt.tprintf("odin test %s -out:%s %s", path, profile.name, flags)
+	}
 	fmt.printfln("%s\n", script)
 
 	return run_script(script)

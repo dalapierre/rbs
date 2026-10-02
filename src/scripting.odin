@@ -15,12 +15,12 @@ T_Data :: struct {
 }
 
 run_script :: proc(script: string) -> Error {
-    cmds: []string
-    if ODIN_OS == .Linux {
-        cmds = { "bash", "-i", "-c", script }
-    } else {
-        cmds = strings.split(script, " ")
-    }
+	cmds: []string
+	if ODIN_OS == .Linux {
+		cmds = { "bash", "-c", script }
+	} else {
+		cmds = strings.split(script, " ")
+	}
 
     stdout_r, stdout_w, _ := os.pipe()
     stderr_r, stderr_w, _ := os.pipe()
