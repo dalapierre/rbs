@@ -1,3 +1,5 @@
+// Small shared path helpers: create nested output dirs and
+// normalize trailing slashes.
 package rbs
 
 import "core:strings"

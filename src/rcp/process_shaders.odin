@@ -1,3 +1,5 @@
+// Shader pipeline: GLSL/HLSL -> SPIR-V via glslc/dxc, with
+// cache checks and profile-relative output.
 package rcp
 
 import "core:strings"

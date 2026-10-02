@@ -1,3 +1,5 @@
+// Shell/script process runner with streamed stdout/stderr
+// (used by exec and user scripts).
 package rbs
 
 import "core:fmt"

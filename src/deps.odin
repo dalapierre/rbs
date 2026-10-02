@@ -1,3 +1,5 @@
+// Dependency install into the profile output dir,
+// plus recursive copy helpers for build assets.
 package rbs
 
 import "core:fmt"

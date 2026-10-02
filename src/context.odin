@@ -1,3 +1,5 @@
+// Build context: profiles, commands, deps, pre/post steps,
+// and process() dispatch from CLI args.
 package rbs
 
 import "core:fmt"

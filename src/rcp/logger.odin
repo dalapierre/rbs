@@ -1,3 +1,4 @@
+// RCP processor log lines (e.g. shader path -> output).
 package rcp
 
 import "core:fmt"

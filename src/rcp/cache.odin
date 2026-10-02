@@ -1,3 +1,5 @@
+// RCP content-hash cache under .rcp-cache; skip reprocessing
+// when input and output are unchanged.
 package rcp
 
 import "core:fmt"

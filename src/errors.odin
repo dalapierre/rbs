@@ -1,3 +1,4 @@
+// Shared Error union and RBS_Error enum used across the package.
 package rbs
 
 import "base:runtime"

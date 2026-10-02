@@ -1,3 +1,5 @@
+// Odin run/build execution: output dir, deps, pre/post steps,
+// and the constructed odin command line.
 package rbs
 
 import "core:fmt"

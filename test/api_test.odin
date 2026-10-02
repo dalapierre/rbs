@@ -1,3 +1,5 @@
+// Unit tests for the public rbs API (context, profiles,
+// commands, CLI, deps, process).
 package test
 
 import "base:runtime"
