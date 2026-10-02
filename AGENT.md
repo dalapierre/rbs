@@ -7,7 +7,6 @@ Odin library that lets projects define build profiles and CLI commands in a root
 | Path | Role |
 |------|------|
 | `src/` | `package rbs` — core API |
-| `src/rcp/` | `package rcp` — content pipeline (early; shaders + `.rcp-cache`) |
 | `test/` | `package test` — API tests via `core:testing` |
 | `ols.json` | OLS checker paths: `src`, `test` |
 
@@ -34,28 +33,23 @@ odin build . -out:rune
 - Helpers: `run_script`, `copy_to_output` (from build-root → profile output), platform/extension helpers in `platform.odin`
 - Errors: `Error` union (`os.Error` | `RBS_Error` | `Allocator_Error`)
 
-## RCP (`package rcp`)
-
-Early asset pipeline. `process_shader` compiles GLSL/HLSL → SPIR-V (`glslc` / `dxc`), skips work when cache hit under `.rcp-cache`.
-
 ## File ownership (one concern per file)
 
 Each `.odin` file is its own content context. Put new code in the existing file that owns that concern, or create a new file when the concept is distinct.
 
 Examples: CLI parsing → `cli.odin`; context/profiles/commands → `context.odin`; odin run/build orchestration → `exec.odin`; a new “test” exec mode stays in `exec.odin`, but test-only helpers/types would go in a new `testing.odin`.
 
-Current owners (`src/` unless noted): `cli`, `context`, `deps`, `errors`, `exec`, `platform`, `scripting`, `testing`, `utils`; `rcp/` → `cache`, `logger`, `process_shaders`; `test/` → `api_test`.
+Current owners (`src/` unless noted): `cli`, `context`, `deps`, `errors`, `exec`, `platform`, `scripting`, `testing`, `utils`; `test/` → `api_test`.
 
 **Required:** every new `.odin` file must start with a multi-line top comment (≤80 chars per line) stating the file’s purpose. Existing files already follow this.
 
 ## Conventions for changes
 
 - Language: **Odin**. Match existing style (tabs in tests, `:: proc`, package-level privacy with `@(private="package"|"file")`).
-- Keep `rbs` and `rcp` as separate packages; `rcp` imports parent via `rbs ".."`.
 - Prefer extending public procs on `Context`/`Profile` over changing CLI parsing semantics without tests.
 - Add/adjust tests in `test/api_test.odin` for API behavior; import is `rbs "../src"`.
 - If a test uses `core:os` to create files or directories, always clean them up after the test (e.g. `defer os.remove_all(tmp)`), so nothing is left behind in CI or locally.
-- Do not commit build artifacts (`bin/`, `*.exe`); ignore `.rcp-cache` when touching pipeline work if it appears locally.
+- Do not commit build artifacts (`bin/`, `*.exe`).
 - README examples may say `rds` — the real package name is **`rbs`**.
 
 ## Required: verify after every code change
