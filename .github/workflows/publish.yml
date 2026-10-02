@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Odin
         uses: laytan/setup-odin@v2
@@ -34,9 +34,12 @@ jobs:
       - name: Install library
         run: ./rbs install ci
 
+      - name: Create zip
+        run: (cd bin && zip -r "../rbs_v${{ inputs.version }}.zip" rbs)
+
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
-          name: rbs_${{ inputs.version }}
-          path: bin/rbs
+          name: rbs_v${{ inputs.version }}
+          path: rbs_v${{ inputs.version }}.zip
           if-no-files-found: error
