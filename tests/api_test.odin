@@ -221,6 +221,56 @@ test_copy_file_into_profile_output :: proc(t: ^testing.T) {
 }
 
 @(test)
+test_copy_file_into_profile_output_renamed :: proc(t: ^testing.T) {
+	tmp, tmp_err := os.make_directory_temp("", "rbs_test_*", context.allocator)
+	testing.expect(t, tmp_err == nil)
+	defer os.remove_all(tmp)
+	defer delete(tmp)
+
+	src_dir, src_dir_err := filepath.join({tmp, "src"}, context.allocator)
+	testing.expect(t, src_dir_err == nil)
+	defer delete(src_dir)
+	testing.expect(t, os.make_directory_all(src_dir) == nil)
+
+	src_file, src_file_err := filepath.join({src_dir, "exec.odin"}, context.allocator)
+	testing.expect(t, src_file_err == nil)
+	defer delete(src_file)
+	testing.expect(t, os.write_entire_file(src_file, "package main") == nil)
+
+	out_dir, out_dir_err := filepath.join({tmp, "bin"}, context.allocator)
+	testing.expect(t, out_dir_err == nil)
+	defer delete(out_dir)
+	testing.expect(t, os.make_directory(out_dir) == nil)
+
+	profile := rbs.Profile{
+		output = out_dir,
+		name   = "demo",
+		entry  = "src",
+		mode   = .Executable,
+		os     = ODIN_OS,
+		arch   = ODIN_ARCH,
+	}
+
+	err := rbs.copy_to_output(profile, src_file, "exec_cool.odin")
+	testing.expect(t, err == nil)
+
+	renamed, renamed_err := filepath.join({out_dir, "exec_cool.odin"}, context.allocator)
+	testing.expect(t, renamed_err == nil)
+	defer delete(renamed)
+	testing.expect(t, os.exists(renamed))
+
+	original_name, original_err := filepath.join({out_dir, "exec.odin"}, context.allocator)
+	testing.expect(t, original_err == nil)
+	defer delete(original_name)
+	testing.expect(t, !os.exists(original_name))
+
+	content, read_err := os.read_entire_file_from_path(renamed, context.allocator)
+	defer delete(content)
+	testing.expect(t, read_err == nil)
+	testing.expect_value(t, string(content), "package main")
+}
+
+@(test)
 test_copy_directory_into_profile_output :: proc(t: ^testing.T) {
 	tmp, tmp_err := os.make_directory_temp("", "rbs_test_*", context.allocator)
 	testing.expect(t, tmp_err == nil)
