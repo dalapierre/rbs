@@ -12,21 +12,21 @@ Having to write scripts or Makefiles to build projects can be annoying, especial
 
 The idea is that you create a simply odin file (usually called `rbs.odin`) that you place at the root of your project. From there, you can run the command `odin build . -out:rune.exe` (.exe if you are on windows). The result, is a build system that you can use by calling `./rune` from the root of your project.
 
-#### Basic rds.odin definition
+#### Basic rbs.odin definition
 
 First, you need to either clone or add the `rbs` package to the root of your project. Then, you create a `rbs.odin` file and paste the following code:
 
 ```odin
 package build
 
-import "rds"
+import "rbs"
 
 main :: proc() {
     ctx := rbs.init_context()
     defer rbs.dispose_context(ctx)
 
     // define a profile, the first one is always the default
-    rbs.add_profile(&ctx, DEBUG_PROFILE, {
+    rbs.add_profile(&ctx, "DEBUG", {
         entry = "src",          // path to the entry point of your package
         flags = "-vet -debug",  // some flags
         mode = .Executable,     // output type
@@ -37,12 +37,11 @@ main :: proc() {
     })
 
     // default command if you run ./rune
-    rbs.add_command(ctx, "", run)
+    rbs.add_command(&ctx, "", run)
     // run command if you run ./rune run
-    rbs.add_command(ctx, "run", run)
+    rbs.add_command(&ctx, "run", run)
     // build command if you run ./rune build
-    rbs.add_command(ctx, "build", build)
-
+    rbs.add_command(&ctx, "build", build)
 
     // process the build by looking at the arguments passed to the CLI
     rbs.process(ctx)
@@ -51,7 +50,6 @@ main :: proc() {
 run :: proc(ctx: rbs.Context, p: rbs.Profile) { rbs.exec_cmd(ctx, .Run, p) }
 
 build :: proc(ctx: rbs.Context, p: rbs.Profile) { rbs.exec_cmd(ctx, .Build, p) }
-
 ```
 
 From there, you can build the file and should be able to call `./rune`, `./rune run` and `./rune build`.
@@ -63,20 +61,21 @@ You can define a new profile by adding new profiles using `rbs.add_profile(...)`
 You can also have access to CLI flags and arguments by using the `rbs.get_cli(os.args)` command. This will return a list of args and flags with their values, this way you can specify custom rules such as:
 
 ```odin
+import "core:fmt"
+import "core:os"
 
 // called through ./rune run -scn:some_scene
-
 process_flags :: proc(ctx: ^rbs.Context) {
     cli := rbs.get_cli(os.args)
     defer rbs.dispose_cli(cli)
 
     if "scn" in cli.flags {
-        p := rbs.get_profile(ctx^, DEBUG_PROFILE)
-        f_room := fmt.aprintf("%s=%s", "-define:SCENE", cli.flags[SCENE_FLAG])
+        p, ok := rbs.get_profile(ctx^, "DEBUG")
+        if !ok do return
+        f_room := fmt.aprintf("%s=%s", "-define:SCENE", cli.flags["scn"])
         p.flags = fmt.aprintf("%s %s", p.flags, f_room)
     }
 }
-
 ```
 
 
