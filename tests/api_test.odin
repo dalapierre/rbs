@@ -205,7 +205,7 @@ test_copy_file_into_profile_output :: proc(t: ^testing.T) {
 		arch   = ODIN_ARCH,
 	}
 
-	err := rbs.copy(profile, src_file, "note.txt")
+	err := rbs.copy_to_output(profile, src_file, "note.txt")
 	testing.expect(t, err == nil)
 
 	// copy of a single file writes to {output}/{to}
@@ -256,7 +256,7 @@ test_copy_directory_into_profile_output :: proc(t: ^testing.T) {
 		arch   = ODIN_ARCH,
 	}
 
-	err := rbs.copy(profile, src_dir, "copied")
+	err := rbs.copy_to_output(profile, src_dir, "copied")
 	testing.expect(t, err == nil)
 
 	copied, copied_err := filepath.join({out_dir, "copied", "nested", "a.txt"}, context.allocator)

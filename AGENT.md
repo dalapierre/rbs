@@ -31,7 +31,7 @@ odin build . -out:rune
 - Register: `add_profile`, `add_command`, `add_pre_build_step`, `add_post_build_step`, `add_dependency`
 - Run: `process` → resolve command + profile → invoke `Command` proc
 - Build: `exec_odin_cmd` creates output dir, installs deps, pre steps, `odin run|build … -target:…`, post steps
-- Helpers: `run_script`, `copy`, platform/extension helpers in `platform.odin`
+- Helpers: `run_script`, `copy_to_output` (from build-root → profile output), platform/extension helpers in `platform.odin`
 - Errors: `Error` union (`os.Error` | `RBS_Error` | `Allocator_Error`)
 
 ## RCP (`package rcp`)

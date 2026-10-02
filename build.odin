@@ -15,12 +15,24 @@ main :: proc() {
         os      = ODIN_OS,
     })
 
+    rbs.add_profile(&ctx, "ci", {
+        arch    = ODIN_ARCH,
+        entry   = ".",
+        mode    = .Executable,
+        os      = ODIN_OS,
+        output  = "bin"
+    })
+
     rbs.add_command(&ctx, "test", run_tests)
+    rbs.add_command(&ctx, "install", run_ci)
 
     if err := rbs.process(ctx); err != nil {
-        fmt.eprintfln("%s", err)
         os.exit(1)
     }
 }
 
 run_tests :: proc(ctx: rbs.Context, p: rbs.Profile) { rbs.exec_odin_cmd(ctx, .Test, p) }
+
+run_ci :: proc(ctx: rbs.Context, p: rbs.Profile) {
+    rbs.copy_to_output(p, "src", "lib")
+}
