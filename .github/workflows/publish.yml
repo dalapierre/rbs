@@ -34,12 +34,9 @@ jobs:
       - name: Install library
         run: ./rbs install ci
 
-      - name: Create zip
-        run: (cd bin && zip -r "../rbs_v${{ inputs.version }}.zip" rbs)
-
       - name: Upload artifact
         uses: actions/upload-artifact@v6
         with:
           name: rbs_v${{ inputs.version }}
-          path: rbs_v${{ inputs.version }}.zip
+          path: bin
           if-no-files-found: error
