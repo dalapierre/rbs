@@ -35,7 +35,8 @@ resolve_build_path :: proc(path: string, allocator := context.allocator) -> (str
 	return filepath.join({root, path}, allocator)
 }
 
-@(private="package")
+// Create the output directory if needed. No-op when it already exists
+// (`os.make_directory_all` returns `.Exist` in that case on some platforms).
 create_output :: proc(output: string) -> Error {
 	if output == "" do return nil
 
@@ -43,7 +44,7 @@ create_output :: proc(output: string) -> Error {
 	if err != nil do return err
 	defer delete(abs_out)
 
-	if dir_err := os.make_directory_all(abs_out); dir_err != nil {
+	if dir_err := os.make_directory_all(abs_out); dir_err != nil && dir_err != .Exist {
 		fmt.eprintfln("Error occurred while trying to create output directory %s", abs_out)
 		return dir_err
 	}

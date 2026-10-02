@@ -320,3 +320,26 @@ test_odin_command_test_variant_exists :: proc(t: ^testing.T) {
 	testing.expect(t, int(rbs.Builtin_Command.Test) != int(rbs.Builtin_Command.Build))
 	testing.expect(t, int(rbs.Builtin_Command.Test) != int(rbs.Builtin_Command.Run))
 }
+
+@(test)
+test_create_output_when_directory_already_exists :: proc(t: ^testing.T) {
+	tmp, tmp_err := os.make_directory_temp("", "rbs_test_*", context.allocator)
+	testing.expect(t, tmp_err == nil)
+	defer os.remove_all(tmp)
+	defer delete(tmp)
+
+	out_dir, out_dir_err := filepath.join({tmp, "bin"}, context.allocator)
+	testing.expect(t, out_dir_err == nil)
+	defer delete(out_dir)
+	testing.expect(t, os.make_directory(out_dir) == nil)
+	testing.expect(t, os.is_dir(out_dir))
+
+	// First call on an existing dir must succeed (no-op), not return .Exist.
+	err := rbs.create_output(out_dir)
+	testing.expect(t, err == nil)
+	testing.expect(t, os.is_dir(out_dir))
+
+	// Second call should also be fine (idempotent).
+	err = rbs.create_output(out_dir)
+	testing.expect(t, err == nil)
+}
