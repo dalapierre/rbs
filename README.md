@@ -37,16 +37,20 @@ main :: proc() {
     })
 
     // default command if you run ./rune
-    rbs.add_command(ctx, "", proc(ctx: rbs.Context, p: rbs.Profile) { rbs.exec_odin_cmd(ctx, .Run, p) })
+    rbs.add_command(ctx, "", run)
     // run command if you run ./rune run
-    rbs.add_command(ctx, "run", proc(ctx: rbs.Context, p: rbs.Profile) { rbs.exec_odin_cmd(ctx, .Run, p) })
+    rbs.add_command(ctx, "run", run)
     // build command if you run ./rune build
-    rbs.add_command(ctx, "build", proc(ctx: rbs.Context, p: rbs.Profile) { rbs.exec_odin_cmd(ctx, .Build, p) })
+    rbs.add_command(ctx, "build", build)
 
 
     // process the build by looking at the arguments passed to the CLI
     rbs.process(ctx)
 }
+
+run :: proc(ctx: rbs.Context, p: rbs.Profile) { rbs.exec_odin_cmd(ctx, .Run, p) }
+
+build :: proc(ctx: rbs.Context, p: rbs.Profile) { rbs.exec_odin_cmd(ctx, .Build, p) }
 
 ```
 
