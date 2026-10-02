@@ -58,8 +58,17 @@ Current owners (`src/` unless noted): `cli`, `context`, `deps`, `errors`, `exec`
 - Do not commit build artifacts (`bin/`, `*.exe`); ignore `.rcp-cache` when touching pipeline work if it appears locally.
 - README examples may say `rds` — the real package name is **`rbs`**.
 
-## Quick verify
+## Required: verify after every code change
+
+After any new or changed code is complete, run the test suite and read the full output before considering the task done:
 
 ```text
 odin test test
 ```
+
+**Completion criteria** — both must be true:
+
+1. **All tests pass** (no failing assertions / test failures).
+2. **No memory failures** (leaks, use-after-free, double-free, allocator errors, or other memory diagnostics in the output).
+
+If a memory issue appears, the task is **not complete** until it is fixed and a re-run is clean. Do not stop at “tests passed” if memory errors are present.
