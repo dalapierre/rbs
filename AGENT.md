@@ -54,6 +54,7 @@ Current owners (`src/` unless noted): `cli`, `context`, `deps`, `errors`, `exec`
 - Keep `rbs` and `rcp` as separate packages; `rcp` imports parent via `rbs ".."`.
 - Prefer extending public procs on `Context`/`Profile` over changing CLI parsing semantics without tests.
 - Add/adjust tests in `test/api_test.odin` for API behavior; import is `rbs "../src"`.
+- If a test uses `core:os` to create files or directories, always clean them up after the test (e.g. `defer os.remove_all(tmp)`), so nothing is left behind in CI or locally.
 - Do not commit build artifacts (`bin/`, `*.exe`); ignore `.rcp-cache` when touching pipeline work if it appears locally.
 - README examples may say `rds` — the real package name is **`rbs`**.
 
